@@ -1,0 +1,239 @@
+.tree .box {
+	display: inline-block;
+	background-color: #fff;
+	width: 100%;
+	height: 100%;
+	border-radius: 3px;
+	position: relative;
+	overflow: hidden;
+}
+
+.tree .tree-container {
+	margin: 20px;
+	overflow-x: hidden;
+}
+
+.tree .jstree-container-ul {
+	width: 100%;
+}
+
+.tree a.jstree-anchor {
+	width: 100%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	margin-right: 20px;
+	width: calc(100% - 20px);
+	width: -moz-calc(100% - 20px);
+	width: -webkit-calc(100% - 20px);
+	width: -o-calc(100% - 20px);
+	width: calc(100% - 20px);
+}
+
+.tree code {
+	padding: 0 7px;
+	font-size: 90%;
+	color: inherit;
+	background-color: #f0f0f0;
+	border-radius: 3px;
+	margin-right: 3px;
+}
+
+.tree .box input[type="search"]  {
+	color: #404040;
+	background-color: #fff;
+	border-color: #ddd;
+	outline: 0;
+	box-shadow: none;
+	line-height: 1.6;
+	border-radius: 4px;
+	height: 32px;
+	font-size: 14px;
+	-webkit-transition: border-color ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s;
+	transition: border-color ease-in-out .15s;
+	padding-right: 50px;
+}
+
+.tree .box input[type="search"]:focus {
+	border-color: #cd3a56;
+}
+
+.tree .box .search {
+	background-color: #f7f7f7;
+	position: relative;
+	border-radius: 0px 0px 3px 3px;
+	border-top: 1px solid #ddd;
+	padding: 20px;
+}
+
+.tree .jstree-wholerow {
+	margin-left: -20px;
+	width: calc(100% + 40px);
+	width: -moz-calc(100% + 40px);
+	width: -webkit-calc(100% + 40px);
+	width: -o-calc(100% + 40px);
+	width: calc(100% + 40px);
+}
+
+.tree .jstree-hovered,
+.tree .jstree-wholerow-hovered {
+	background-color: #f0f0f0;
+	background-image: none;
+}
+
+.tree .jstree-clicked,
+.tree .jstree-wholerow-clicked {
+	background-color: #f7f7f7;
+	background-image: none;
+}
+
+.tree .jstree-hovered code,
+.tree .jstree-wholerow-hovered code,
+.tree .jstree-clicked code,
+.tree .jstree-wholerow-clicked code {
+	background-color: inherit;
+}
+
+.tree .jstree-hovered.jstree-disabled code,
+.tree .jstree-wholerow-hovered.jstree-disabled code,
+.tree .jstree-clicked.jstree-disabled code,
+.tree .jstree-wholerow-clicked.jstree-disabled code {
+	background-color: #f7f7f7;
+}
+
+.tree .jstree-hovered.jstree-disabled.jstree-search code,
+.tree .jstree-wholerow-hovered.jstree-disabled.jstree-search code,
+.tree .jstree-clicked.jstree-disabled.jstree-search code,
+.tree .jstree-wholerow-clicked.jstree-disabled.jstree-search code {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.tree .jstree-search {
+    font-style: inherit;
+    font-weight: inherit;
+	color: inherit;
+}
+
+.tree .jstree-search span {
+    background-color: #4E2880;
+    border-radius: 0.28571429rem;
+    padding: 0 2px 2px;
+	color: #fff;
+}
+
+.tree .jstree-search code {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.tree .jstree-disabled {
+    opacity: 0.54;
+    color: inherit;
+}
+
+.tree .jstree-open .jstree-icon.jstree-ocl,
+.tree .jstree-closed .jstree-icon.jstree-ocl,
+.tree .jstree-icon.jstree-themeicon,
+.tree .jstree-icon.jstree-checkbox {
+    line-height: 1;
+    color: #ddd;
+    padding-top: 5px;
+}
+
+.tree .jstree-open .jstree-icon.jstree-ocl,
+.tree .jstree-closed .jstree-icon.jstree-ocl,
+.tree .jstree-icon.jstree-themeicon,
+.tree .jstree-icon.jstree-checkbox,
+.tree .search > button.check {
+	font-family: "Font Awesome 5 Pro";
+    font-weight: 400;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    background-image: none;
+}
+
+.tree .jstree-open > .jstree-icon.jstree-ocl::before {
+    content: "\f146";
+}
+
+.tree .jstree-closed > .jstree-icon.jstree-ocl::before {
+	content: "\f0fe";
+}
+
+.tree .jstree-icon.jstree-themeicon::before {
+	content: "\f07b";
+}
+
+.tree .jstree-icon.jstree-checkbox::before {
+	content: "\f0c8";
+}
+
+.tree .jstree-clicked > .jstree-checkbox::before, 
+.tree .jstree-checked > .jstree-checkbox::before {
+    content: "\f14a";
+}
+
+.tree .search > button {
+	color: #cd3a56;
+	font-size: 14px;
+	line-height: 32px;
+	opacity: 1;
+	position: absolute;
+	top: 20px;
+	-webkit-appearance: none;
+	padding: 0;
+	cursor: pointer;
+	background: 0 0;
+	border: 0;
+}
+
+.tree .search > button.close {
+	right: 29px;
+}
+
+.tree .search > button.check {
+	font-weight: 900;
+	line-height: 31px;
+	right: 49px;
+}
+
+.tree .search > button.check::before {
+	content: "\f058";
+}
+
+.tree .search > button.check.off::before {
+	content: "\f111";
+}
+
+.tree .search > button.close:hover,
+.tree .search > button.check:hover {
+    color: #e2404e;
+}
+
+.tree .search > code.count {
+	position: absolute;
+	right: 71px;
+	top: 27px;
+}
+
+.tree .search > code.count:empty {
+	display: none;
+}
+
+.nicescroll-cursors {
+	right: -3px;
+}
+
+.tree .box > .loader {
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	top: 0;
+	background-color: rgba(255, 255, 255, 0.5);
+	color: #4E2880;
+}

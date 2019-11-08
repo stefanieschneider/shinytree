@@ -1,0 +1,18 @@
+dependencies:
+  - name: jstree
+    version: 3.3.8
+    src: "htmlwidgets/lib/jstree"
+    script: jstree.min.js
+    stylesheet: 
+      - jstree.min.css
+      - jstree.theme.css
+  - name: fontawesome
+    version: 5.3.1
+    src: "htmlwidgets/lib/fontawesome"
+    stylesheet: 
+      - all.min.css
+      - v4-shims.min.css
+  - name: nicescroll
+    version: 3.7.6
+    src: "htmlwidgets/lib/nicescroll"
+    script: nicescroll.min.js
