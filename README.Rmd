@@ -1,0 +1,46 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+
+options(width = "100")
+```
+
+# shinytree <img src="man/figures/example.png" align="right" width="225" />
+
+[![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Travis CI build status](https://travis-ci.org/stefanieschneider/shinytree.svg?branch=master)](https://travis-ci.org/stefanieschneider/shinytree)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/stefanieschneider/shinytree?branch=master&svg=true)](https://ci.appveyor.com/project/stefanieschneider/shinytree)
+
+## Overview
+
+This R package creates tree widgets using the JavaScript library [jsTree](https://github.com/vakata/jstree), e.g., in Shiny. The [jsTree](https://github.com/vakata/jstree) library has been included. shinytree is built on top of [Bootstrap](https://getbootstrap.com/) and supports [jQuery.NiceScroll](https://github.com/inuyaksa/jquery.nicescroll). Please be aware that this R package is a more lightweight alternative to [shinyTree](https://github.com/shinyTree/shinyTree) and thus does not implement methods to create or convert trees or tree-like structures.
+
+If `search` is added as a plugin, two additional functions are automatically activated: one button to select search results; another one to reset the tree, i.e., collapse all opened leaves and remove a currently active search.
+
+## Installation
+
+You can install the development version of shinytree from [GitHub](https://github.com/stefanieschneider/shinytree):
+
+``` r
+# install.packages("devtools")
+devtools::install_github("stefanieschneider/shinytree")
+```
+
+## Usage
+
+```{r example, code = readLines("inst/examples/tree.R")}
+```
+
+## Contributing
+
+Please report issues, feature requests, and questions to the [GitHub issue tracker](https://github.com/stefanieschneider/shinytree/issues). We have a [Contributor Code of Conduct](https://github.com/stefanieschneider/shinytree/blob/master/CODE_OF_CONDUCT.md). By participating in shinytree you agree to abide by its terms.
