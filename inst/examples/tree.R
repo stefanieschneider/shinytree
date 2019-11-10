@@ -67,6 +67,13 @@ if (interactive()) {
     return(get_codes(results, file = file))
   }
 
+  get_initial <- function() {
+    codes <- get_codes(as.character(0:9), file)
+    children <- get_children(codes, file)
+
+    return(c(codes, children))
+  }
+
   search_codes <- function(query, file) {
     connect <- DBI::dbConnect(RSQLite::SQLite(), file)
 
@@ -100,14 +107,7 @@ if (interactive()) {
   )
 
   server <- function(input, output, session) {
-    values <- reactiveValues(
-      data = {
-        codes <- get_codes(as.character(0:9), file)
-        children <- get_children(codes, file)
-
-        c(codes, children)
-      }
-    )
+    values <- reactiveValues(data = get_initial())
 
     observeEvent(input$tree_selected_id, {
       print(input$tree_selected_id)
@@ -131,6 +131,10 @@ if (interactive()) {
         values$data <- c(
           values$data, codes, children_1, children_2
         )
+      }
+
+      if (nchar(input$tree_search) == 0) {
+        values$data <- get_initial()
       }
     })
 
