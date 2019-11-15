@@ -92,8 +92,7 @@ if (interactive()) {
     connect <- DBI::dbConnect(RSQLite::SQLite(), file)
 
     results <- sapply(
-      codes, get_code, connect = connect,
-      simplify = FALSE, USE.NAMES = FALSE
+      codes, get_code, connect = connect, simplify = FALSE
     )
 
     DBI::dbDisconnect(connect)
@@ -103,35 +102,68 @@ if (interactive()) {
   }
 
   get_children <- function(codes, file) {
-    results <- unlist(lapply(codes, function(x) x$children))
+    if (length(codes) > 0) {
+      results <- lapply(codes, function(x) x$children)
 
-    return(get_codes(results, file = file))
+      return(get_codes(unlist(results), file))
+    }
   }
 
-  get_initial <- function() {
+  get_initial <- function(file) {
     codes <- get_codes(as.character(0:9), file)
     children <- get_children(codes, file)
 
     return(c(codes, children))
   }
 
-  search_codes <- function(query, file) {
+  get_examples <- function(codes, file) {
+    codes <- gsub("'", "''", gsub("...)$", "", codes))
+    codes <- sprintf("code like '%s%%'", codes)
+    codes <- paste(codes, collapse = " OR ")
+
+    connect <- DBI::dbConnect(RSQLite::SQLite(), file)
+    query <- paste("SELECT ex FROM database WHERE", codes)
+
+    results <- DBI::dbGetQuery(connect, query)
+    DBI::dbDisconnect(connect)
+
+    results <- sapply(
+      results[[1]], rjson::fromJSON, USE.NAMES = FALSE
+    )
+
+    return(unique(unlist(results)))
+  }
+
+  search_codes <- function(term, file) {
     connect <- DBI::dbConnect(RSQLite::SQLite(), file)
 
     query <- paste0(
       "SELECT code, p, c FROM database WHERE txt like '%",
-      gsub("'", "''", query), "%' COLLATE NOCASE ORDER BY",
+      gsub("'", "''", term), "%' COLLATE NOCASE ORDER BY",
       " code LIMIT 100"
     )
 
     results <- DBI::dbGetQuery(connect, query)
     DBI::dbDisconnect(connect)
 
-    parents <- sapply(results[[2]], rjson::fromJSON)
-    children <- sapply(results[[3]], rjson::fromJSON)
+    if (nrow(results) > 0) {
+      parents <- sapply(
+        results[[2]], rjson::fromJSON, USE.NAMES = FALSE
+      )
 
-    results <- c(unlist(unname(parents)), results[[1]])
-    results <- c(results, unlist(unname(children)))
+      children <- sapply(
+        results[[3]], rjson::fromJSON, USE.NAMES = FALSE
+      )
+
+      results <- c(unlist(parents), results[[1]])
+      results <- c(results, unlist(children))
+    } else {
+      results <- get_codes(gsub("'", "''", term), file)[[1]]
+
+      if (!is.null(results)) {
+        results <- c(results[["parent"]], results[["id"]])
+      }
+    }
 
     return(unique(results))
   }
@@ -140,7 +172,7 @@ if (interactive()) {
 
   file <- list.files(
     file_path, pattern = "sqlite$", full.names = TRUE
-  )[1]
+  )
 
   ui <- fluidPage(
     style = "background-color: #eeeeee; padding: 30px 15px;",
@@ -148,7 +180,7 @@ if (interactive()) {
   )
 
   server <- function(input, output, session) {
-    values <- reactiveValues(data = get_initial())
+    values <- reactiveValues(data = get_initial(file))
 
     observeEvent(input$tree_selected_id, {
       print(input$tree_selected_id)
@@ -158,7 +190,7 @@ if (interactive()) {
     })
 
     observeEvent(input$tree_checked_id, {
-      print(input$tree_checked_id)
+      examples <- get_examples(input$tree_checked_id, file)
     })
 
     observeEvent(input$tree_search, {
@@ -170,12 +202,13 @@ if (interactive()) {
         children_2 <- get_children(children_1, file)
 
         values$data <- c(
-          values$data, codes, children_1, children_2
+          values$data, codes, children_1,
+          children_2, values$data[1]
         )
       }
 
       if (nchar(input$tree_search) == 0) {
-        values$data <- get_initial()
+        values$data <- get_initial(file)
       }
     })
 

@@ -37,7 +37,7 @@ HTMLWidgets.widget({
 					if (opts.options.scrollbar) {
 						$(tree_id).niceScroll({
 							horizrailenabled: false, autohidemode: false,
-							cursorcolor: "#f0f0f0", enableobserver: true
+							cursorcolor: "#dddddd", enableobserver: true
 						});
 					}
 
