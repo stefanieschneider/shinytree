@@ -51,3 +51,20 @@ callJS <- function() {
 
   session$sendCustomMessage(method, message)
 }
+
+.onLoad <- function(libname, pkgname) {
+  shiny::registerInputHandler("shinytree.data", function(data, ...) {
+    if ("type" %in% names(data[[1]])) {
+      data <- matrix(unlist(data), ncol = 5, byrow = TRUE)
+    } else {
+      data <- matrix(unlist(data), ncol = 4, byrow = TRUE)
+    }
+
+    data <- data.frame(data, stringsAsFactors = FALSE)
+
+    colnames(data)[1:4] <- c("id", "text", "icon", "parent")
+    data$text <- gsub("^[^>]*>(.*)<\\/span>.*", "\\1", data$text)
+
+    data[, c("id", "parent", "text")]
+  })
+}

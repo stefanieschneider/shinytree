@@ -26,16 +26,17 @@ tree <- function(
 ) {
   options <- modifyList(getOption("jsTree.options", list()), options)
 
-  search <- "search" %in% plugins
-  if (search) options[["force_text"]] <- FALSE
+  search <- "search" %in% plugins; menu <- "menu" %in% plugins
+  if (search | menu) options[["force_text"]] <- FALSE
 
   if (is.list(data)) {
-    data <- lapply(data, remove_values, search = search)
+    data <- lapply(data, remove_values, search = search, menu = menu)
   } else {
     stop("Object `data` is not of type `list`.")
   }
 
   options[["data"]] <- unname(data, force = TRUE)
+  if (is.null(options$loading)) options$loading <- FALSE
 
   dependencies <- list(
     rmarkdown::html_dependency_jquery(),
@@ -48,9 +49,12 @@ tree <- function(
   )
 }
 
-remove_values <- function(x, search = FALSE) {
+remove_values <- function(x, search = FALSE, menu = FALSE) {
+  button <- "<button class=\"%s\"><i class=\"%s\"></i></button>"
+
   valid_keys <- c(
-    "id", "parent", "text", "state", "li_attr", "a_attr"
+    "id", "parent", "text", "state", "li_attr", "a_attr",
+    "type", "opened", "disabled", "selected"
   )
 
   if (search) {
@@ -59,6 +63,20 @@ remove_values <- function(x, search = FALSE) {
     x[["text"]] <- sprintf(
       "<span title=\"%s\">%s</span>", title, x[["text"]]
     )
+  }
+
+  if (is.null(x[["state"]]) & grepl("</i>", x[["text"]])) {
+    x[["state"]] <- list("disabled" = TRUE)
+  } else {
+    if (menu) {
+      new_button <- sprintf(button, "add", "fa fa-plus-circle")
+      x[["text"]] <- paste0(x[["text"]], new_button)
+    }
+  }
+
+  if (menu) {
+    new_button <- sprintf(button, "remove", "fa fa-minus-circle")
+    x[["text"]] <- paste0(x[["text"]], new_button)
   }
 
   return(x[names(x) %in% valid_keys])

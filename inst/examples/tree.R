@@ -186,7 +186,7 @@ if (interactive()) {
     output$tree <- renderTree({
       tree(
         unique(values$data[order(names(values$data))]),
-        plugins = c("search", "wholerow", "checkbox"),
+        plugins = c("search", "wholerow", "checkbox", "dnd"),
         options = list(
           "themes" = list("dots" = FALSE, "icons" = FALSE),
           "check_callback" = TRUE, "scrollbar" = TRUE

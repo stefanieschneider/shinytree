@@ -1,3 +1,7 @@
+.tree {
+	position: relative;
+}
+
 .tree .box {
 	display: inline-block;
 	background-color: #fff;
@@ -29,7 +33,8 @@
 	width: calc(100% - 20px);
 }
 
-.tree code {
+.tree code,
+#jstree-dnd code {
 	padding: 0 7px;
 	font-size: 90%;
 	color: inherit;
@@ -38,7 +43,18 @@
 	margin-right: 3px;
 }
 
-.tree .box input[type="search"]  {
+.tree span > i, 
+#jstree-dnd span > i:first-child {
+	color: #ddd;
+	margin-right: 3px;
+}
+
+#jstree-dnd span > i:first-child {
+	margin-right: -7px;
+}
+
+.tree .box input[type="search"],
+.tree .box input[type="text"]  {
 	color: #404040;
 	background-color: #fff;
 	border-color: #ddd;
@@ -46,16 +62,30 @@
 	box-shadow: none;
 	line-height: 1.6;
 	border-radius: 4px;
-	height: 32px;
 	font-size: 14px;
 	-webkit-transition: border-color ease-in-out .15s;
 	-o-transition: border-color ease-in-out .15s;
 	transition: border-color ease-in-out .15s;
-	padding-right: 50px;
 }
 
 .tree .box input[type="search"]:focus {
 	border-color: #cd3a56;
+}
+
+.tree .box input[type="text"]  {
+	height: 21px;
+	padding-right: 10px;
+	margin-left: 3px;
+	display: inline-block;
+	width: 100px;
+	border-color: transparent;
+	background-color: transparent;
+	padding: 0;
+}
+
+.tree .box input[type="search"]  {
+	height: 32px;
+	padding-right: 50px;
 }
 
 .tree .box .search {
@@ -143,7 +173,9 @@
 .tree .jstree-closed .jstree-icon.jstree-ocl,
 .tree .jstree-icon.jstree-themeicon,
 .tree .jstree-icon.jstree-checkbox,
-.tree .search > button.check {
+.tree .search > button.check,
+#jstree-dnd .jstree-er,
+#jstree-dnd .jstree-ok {
 	font-family: "Font Awesome 5 Pro";
     font-weight: 400;
     -moz-osx-font-smoothing: grayscale;
@@ -152,7 +184,7 @@
     font-style: normal;
     font-variant: normal;
     text-rendering: auto;
-    background-image: none;
+    background-image: none !important;
 }
 
 .tree .jstree-open > .jstree-icon.jstree-ocl::before {
@@ -178,16 +210,46 @@
 
 .tree .search > button {
 	color: #cd3a56;
-	font-size: 14px;
 	line-height: 32px;
 	opacity: 1;
-	position: absolute;
 	top: 20px;
+}
+
+.tree .search > button,
+.tree button.remove,
+.tree button.add {
+	font-size: 14px;
+	position: absolute;
 	-webkit-appearance: none;
 	padding: 0;
 	cursor: pointer;
 	background: 0 0;
 	border: 0;
+}
+
+#jstree-dnd button.remove,
+#jstree-dnd button.add {
+	display: none;
+}
+
+.tree button.remove,
+.tree button.add {
+	color: #ddd;
+}
+
+.tree a:hover > button.remove,
+.tree a:hover > button.add {
+	color: #cd3a56;
+}
+
+.tree button.remove,
+#jstree-dnd button.remove {
+	right: 9px;
+}
+
+.tree button.add,
+#jstree-dnd button.add {
+	right: 29px;
 }
 
 .tree .search > button.close {
@@ -209,7 +271,9 @@
 }
 
 .tree .search > button.close:hover,
-.tree .search > button.check:hover {
+.tree .search > button.check:hover,
+.tree a:hover > button.remove:hover,
+.tree a:hover > button.add:hover {
     color: #e2404e;
 }
 
@@ -231,9 +295,29 @@
 	position: absolute;
 	text-align: center;
 	width: 100%;
-	height: 100px;
-	line-height: 100px;
+	height: 100%;
 	top: 0;
 	background-color: rgba(255, 255, 255, 0.5);
 	color: #4E2880;
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#jstree-dnd .jstree-er::before {
+	content: "\f2d3";
+	margin-right: 0 !important;
+	color: #ddd;
+}
+
+#jstree-dnd .jstree-ok::before {
+	content: "\f14a";
+	margin-right: 0 !important;
+	color: #ddd;
+}
+
+#jstree-dnd .jstree-ok,
+#jstree-dnd .jstree-er {
+	margin-right: 0 !important;
 }

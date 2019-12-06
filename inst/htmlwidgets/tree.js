@@ -31,12 +31,19 @@ HTMLWidgets.widget({
 
 					$(tree_id).jstree({
 						"core": opts.options, "plugins": opts.plugins,
-						"checkbox": set_checkbox(opts)
+						"types": {
+							"#": {"valid_children": ["folder"]},
+							"folder": {"valid_children": ["folder", "item"]},
+							"item": {"max_children": 0, "max_depth": 0}
+						},
+						"checkbox": set_checkbox(opts), "dnd": {
+							check_while_dragging: true
+						}
 					});
 
 					if (opts.options.scrollbar) {
 						$(tree_id).niceScroll({
-							horizrailenabled: false, autohidemode: false,
+							horizrailenabled: false, autohidemode: true,
 							cursorcolor: "#dddddd", enableobserver: true
 						});
 					}
@@ -63,8 +70,6 @@ HTMLWidgets.widget({
 
 									if (HTMLWidgets.shinyMode) {
 										Shiny.setInputValue(el.id + "_search", query);
-										add_loader("#" + el.id + " .box", tree_id);
-
 										active_search = {"id": 0, "query": query};
 									} else {
 										run_search(el, tree_id);
@@ -94,7 +99,6 @@ HTMLWidgets.widget({
 					});
 
 					$(el).find(".check").on("click", function() {
-						add_loader("#" + el.id + " .box", tree_id);
 						$(this).toggleClass("off"); var nodes_to_check = [];
 
 						$(tree_id).find(".jstree-search").each(function() {
@@ -110,8 +114,6 @@ HTMLWidgets.widget({
 								$(tree_id).jstree(true).deselect_node(nodes);
 							}
 						}
-
-						remove_loader("#" + el.id + " .box");
 					});
 
 					$(tree_id).on("changed.jstree", function (event, data) {
@@ -120,10 +122,92 @@ HTMLWidgets.widget({
 						}
 
 						if (HTMLWidgets.shinyMode) {
-							var all_checked = $(tree_id).jstree("get_top_checked");
-							Shiny.setInputValue(el.id + "_checked_id", all_checked);
+							var top_checked = $(tree_id).jstree("get_top_checked");
+							var checked = $(tree_id).jstree("get_checked");
+
+							Shiny.setInputValue(el.id + "_checked_id", top_checked);
+							Shiny.setInputValue(el.id + "_all_checked_id", checked);
 						}
 					});
+
+					$(document).on("dnd_stop.vakata", function (event, data) {
+						if (HTMLWidgets.shinyMode) {
+							var data = $(tree_id).jstree(true).get_json("#", {
+								flat: true, no_a_attr: true, no_li_attr: true, no_state: true
+							})
+
+							Shiny.onInputChange(el.id + "_data" + ":shinytree.data", data);
+						}
+					});
+
+					if (opts.options.loading) {
+						$(document).on("shiny:busy", function(event) {
+							add_loader("#" + el.id + " .box", tree_id);
+						});
+
+						$(document).on("shiny:idle", function(event) {
+							remove_loader("#" + el.id + " .box");
+						});
+					}
+
+					$(document).on("click", tree_id + " .add", function (event) {
+						var node_id = $(this).parent()[0].id.split("_")[0];
+
+						if (HTMLWidgets.shinyMode) {
+							Shiny.setInputValue(el.id + "_add_id", node_id, {priority: "event"});
+						}
+
+						$(tree_id).jstree(true).deselect_node(node_id);
+					});
+
+					$(document).on("click", tree_id + " .remove", function (event) {
+						var node_id = $(this).parent()[0].id.split("_")[0];
+
+						if (HTMLWidgets.shinyMode) {
+							Shiny.setInputValue(el.id + "_remove_id", node_id, {priority: "event"});
+						}
+
+						$(tree_id).jstree(true).deselect_node(node_id);
+					});
+
+					if ($.inArray("menu", opts.plugins) !== -1) {
+						var html_input = "<input class=\"form-control input-sm\" type=\"text\">";
+						var html_code; var html_text; var node_id;
+
+						$(document).on("dblclick", tree_id + " a > span", function (event) {
+							event.preventDefault();
+
+							html_code = $(this).find("code")[0].outerHTML;
+							html_text = $(this).html().replace(html_code, "");
+
+							$(this).html(html_code + html_input);
+							node_id = $(this).parent()[0].id.split("_")[0];
+
+							var input_width = $(this).parent().find(".add").position().left -
+											  $(this).parent().find("input").position().left;
+
+							$(this).find("input").css("width", input_width + "px").focus();
+						});
+
+						$(document).on("focusout", tree_id + " a > span > input", function () {
+							var new_html_text = $(tree_id).jstree(true).get_text(node_id);
+
+							if ($(this).val().trim().length > 0) {
+								html_text = new RegExp(html_text.trim(), "g");
+								new_html_text = new_html_text.replace(html_text, $(this).val());
+							}
+							
+							$(tree_id).jstree("rename_node", node_id, new_html_text);
+
+							if (HTMLWidgets.shinyMode) {
+								var data = $(tree_id).jstree(true).get_json("#", {
+									flat: true, no_a_attr: true, no_li_attr: true, no_state: true
+								})
+
+								Shiny.onInputChange(el.id + "_data" + ":shinytree.data", data);
+							}
+						});
+					}
 				} else {
 					$(tree_id).jstree(true).settings.core = opts.options;
 
@@ -140,8 +224,6 @@ HTMLWidgets.widget({
 						$(el).find(".count").html(n_results);
 					}
 				}
-
-				remove_loader("#" + el.id + " .box");
 			},
 
 			resize: function(width, height) {
@@ -218,10 +300,6 @@ function add_loader(container_id, tree_id) {
 			   "fa-circle-notch fa-spin\"></i></div>";
 
 	$(html).hide().appendTo(container_id).fadeIn();
-	var height = $(tree_id).outerHeight(true) + "px";
-
-	$(container_id).find(".loader").css("height", height);
-	$(container_id).find(".loader").css("line-height", height);
 }
 
 function remove_loader(container_id) {
