@@ -4,8 +4,7 @@
 \alias{tree}
 \title{Create a Tree Widget Using the JavaScript Library jsTree}
 \usage{
-tree(data, options = list(), plugins = NULL, width = NULL,
-  height = NULL)
+tree(data, options = list(), plugins = NULL, width = NULL, height = NULL)
 }
 \arguments{
 \item{data}{A list with a tree-like structure, either in the standard or the

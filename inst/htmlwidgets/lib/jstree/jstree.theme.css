@@ -244,8 +244,14 @@
 
 .tree button.remove,
 #jstree-dnd button.remove {
-	right: 9px;
+	right: 0px;
+	padding-right: 9px;
 }
+
+.jstree-disabled button.remove {
+	background-color: #fff;
+}
+
 
 .tree button.add,
 #jstree-dnd button.add {

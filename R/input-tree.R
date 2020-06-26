@@ -39,8 +39,8 @@ tree <- function(
   if (is.null(options$loading)) options$loading <- FALSE
 
   dependencies <- list(
-    rmarkdown::html_dependency_jquery(),
-    rmarkdown::html_dependency_bootstrap("default")
+    rmarkdown::html_dependency_jquery()
+    # rmarkdown::html_dependency_bootstrap("default")
   )
 
   htmlwidgets::createWidget(
